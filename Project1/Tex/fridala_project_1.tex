@@ -1,0 +1,107 @@
+\documentclass[notitlepage, reprint, nofootinbib]{revtex4-1}
+\usepackage[utf8]{inputenc}
+
+% Mathematics and symbols:
+\usepackage{amsmath, gensymb, amsthm, physics, mhchem}
+% Figures:
+\usepackage{tikz, graphicx}
+
+\usepackage[caption=false]{subfig}
+% Other:
+\usepackage{hyperref}
+
+
+% Document formatting 
+\setlength{\parskip}{1mm}
+\setlength{\parindent}{0mm}
+
+% Programming
+\definecolor{codebackground}{rgb}{0.9,0.9,0.9}
+\usepackage{listings}
+\lstset{
+	language=python,
+	backgroundcolor=\color{codebackground},
+	basicstyle=\scriptsize,
+	aboveskip={1\baselineskip},
+	columns=fixed,
+	numbers=left,
+	showstringspaces=false, 
+	breaklines=true, 
+	frame=single,
+	showtabs=false,
+	showspaces=false,
+	keywordstyle=\color[rgb]{0,0,1},
+	commentstyle=\color[rgb]{0.133,0.545,0.133}
+	}
+
+%\renewcommand{\thesubsubsection}{\alph{subsubsection})}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\begin{document}
+\title{FYS3150 - Project 1}
+\author{Frida Larsen}
+\maketitle
+
+% Introduction
+\section{Introduction}
+{\color{red}{Reference code in github repository.}} Problem to solve
+\begin{equation}\label{Poisson}-\dv{x} u(x)=f(x),\end{equation}
+with 
+\begin{equation}\label{info}x\in (0,1)\quad\text{and}\quad u(0)=u(1)=0.\end{equation}
+
+% Theory
+\section{Theory}
+Approximation of second derivative of a general discretized function $g_i$: 
+\begin{equation}\label{second_derivative} g_i'' = \frac{g_{i+1}+g_{i-1}-2g_i}{h^2}+\order{h^2}.\end{equation}
+{\color{red}approx by removing order.} \\[2mm]
+Discretized approximation $u\rightarrow u_i$ and $x\rightarrow x_i=ih$, where the step length $h$ is defined as
+\begin{equation}\label{step-length}h=\frac{1}{n+1},\end{equation} 
+where $n$ are the total number of points on the interval $\qty[x_0=0,\ x_{n+1}=1]$. The boundary conditions are then discretized as $u_0=u_{n+1}=0$.\\[2mm]
+{\color{red}{fiks tekst i utledningen below}}\\[2mm]
+Thus our equation, equation \ref{Poisson}, can be rewritten as
+$$-\frac{u_{i+1}+u_{i-1}-2u_i}{h^2}=f_i.$$
+By introducing $\tilde{b}_i=h^2 f_i$ and {\color{red}{inserting for $i$}} we get
+$$\mqty(-u_0+2u_1-u_2 \\ -u_1+2u_2-u3 \\ \dots \\ -u_{n-1}+2u_n-2u_{n+1})=\mqty(b_1\\b_2\\b_3\\b_4).$$
+Inserting we get
+\begin{equation}\label{big_boy}\mqty( 2 & -1 & 0 & \dots & 0 & 0 \\ -1 & 2 & -1 & 0 &\dots&\dots \\ 0 & -1 & 2 & -1 & 0 & \dots \\ \dots & \dots & \dots & \dots &\dots &\dots \\ 0 & \dots & \dots & 0 & -1 & 2)\mqty(u_1\\u_2\\u_3\\\dots\\u_n)=\mqty(\tilde{b}_1\\ \tilde{b}_2\\ \tilde{b}_3\\ \tilde{b}_4 \\ \tilde{b}_5). \end{equation}
+So we have 
+\begin{equation}\label{small_boy}\vb{A}\vb{u}=\vb{\tilde{b}},\end{equation}
+with the matrix $\vb{A}$ given by equation \ref{big_boy}.
+
+% Method
+\section{Method}
+
+
+
+% Results
+\section{Results}
+
+
+% Discussion
+\section{Discussion}
+
+% Conclusion
+\section{Conclusion}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
