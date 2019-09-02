@@ -23,24 +23,34 @@ def tridiagonal_matrix_algorithm(a, b, c, b_tilde):
 
     return u
 
-n_ = 1000
-x  = np.linspace(0, 1, n_+2)
-h  = x[1] - x[0]
+def run_tma(n):
+    x  = np.linspace(0, 1, n+2)
+    h  = x[1] - x[0]
 
-u_sol = 1 - (1-np.exp(-10))*x - np.exp(-10*x)
+    u_sol = 1 - (1-np.exp(-10))*x - np.exp(-10*x)
 
-b_tilde = (h**2)*100*np.exp(-10*x)
-a = np.ones(n_-1)*(-1)
-b = np.ones(n_)*(2)
-c = np.ones(n_-1)*(-1)
+    b_tilde = (h**2)*100*np.exp(-10*x)
+    a = np.ones(n-1)*(-1)
+    b = np.ones(n)*(2)
+    c = np.ones(n-1)*(-1)
 
-u_algorithm = np.zeros(n_+2)
-u_algorithm[1:n_+1] = tridiagonal_matrix_algorithm(a, b, c, b_tilde)
+    u_algorithm = np.zeros(n+2)
+    u_algorithm[1:n+1] = tridiagonal_matrix_algorithm(a, b, c, b_tilde)
 
-plt.plot(x, u_sol, label="Closed-form")
-plt.plot(x, u_algorithm, label="Algorithm")
-plt.legend()
-plt.show()
+    return x, u_sol, u_algorithm
+
+if __name__ == '__main__':
+
+    n_ = [10, 100, 1000]
+
+    for i in n_:
+        x, sol, algorithm = run_tma(i)
+        plt.plot(x, sol, label="Closed-form solution")
+        plt.plot(x, algorithm, label="Algorithm solution")
+        plt.legend()
+        plt.title("Approximation by tridiagonal matrix algorithm, n={}".format(i))
+        plt.savefig("t_m_a_n_{}.png".format(i))
+        plt.show()
 
 
 
