@@ -51,7 +51,7 @@ def run_tma(n):
         u_sol (array) : Closed-form solution of problem
         u_algorithm (array) : Numerical solution of problem
     """
-    
+
     x  = np.linspace(0, 1, n+2)
     h  = x[1] - x[0]
 
@@ -67,6 +67,7 @@ def run_tma(n):
 
     return x, u_sol, u_algorithm
 
+
 if __name__ == '__main__':
 
     n_ = [10, 100, 1000]
@@ -76,6 +77,8 @@ if __name__ == '__main__':
         plt.plot(x, sol, label="Closed-form solution")
         plt.plot(x, algorithm, label="Algorithm solution")
         plt.legend()
+        plt.xlabel('$x$')
+        plt.ylabel('$u (x)$')
         plt.title("Approximation by tridiagonal matrix algorithm, n={}".format(i))
         plt.savefig("t_m_a_n_{}.png".format(i))
         plt.show()
