@@ -18,25 +18,28 @@ def tridiagonal_matrix_algorithm(a, b, c, f):
     """
 
     n       = len(b)
+    x       = np.linspace(0, 1, n+2)
+    h       = x[1] - x[0]
+    b_squig = h**2*f
     u       = np.zeros(n)
     c_prime = np.zeros(n-1)
     d_prime = np.zeros(n)
 
     c_prime[0]  = c[0] / b[0]
-    d_prime[0]  = f[0] / b[0]
+    d_prime[0]  = b_squig[0] / b[0]
 
     for i in range(1, n-1):
         c_prime[i] = c[i]/(b[i]-(a[i-1]*c_prime[i-1]))
 
     for j in range(1, n):
-        d_prime[j] = (f[j]-(a[j-1]*d_prime[j-1])) \
+        d_prime[j] = (b_squig[j]-(a[j-1]*d_prime[j-1])) \
                      / (b[j]-(a[j-1]*c_prime[j-1]))
 
     u[n-1] = d_prime[n-1]
     for k in range(n-2, -1, -1):
         u[k] = d_prime[k] - (c_prime[k]*u[k+1])
 
-    return np.concatenate([np.zeros(1), u, np.zeros(1)])
+    return x, np.concatenate([np.zeros(1), u, np.zeros(1)])
 
 def run_tma(n):
     """
@@ -52,17 +55,14 @@ def run_tma(n):
         u_algorithm (array) : Numerical solution of problem
     """
 
-    x  = np.linspace(0, 1, n+2)
-    h  = x[1] - x[0]
-
     u_sol = 1 - (1-np.exp(-10))*x - np.exp(-10*x)
 
-    f = (h**2)*100*np.exp(-10*x)
+    f = 100*np.exp(-10*x)
     a = np.ones(n-1)*(-1)
     b = np.ones(n)*(2)
     c = np.ones(n-1)*(-1)
 
-    u_algorithm = tridiagonal_matrix_algorithm(a, b, c, f)
+    x, u_algorithm = tridiagonal_matrix_algorithm(a, b, c, f)
 
     return x, u_sol, u_algorithm
 
