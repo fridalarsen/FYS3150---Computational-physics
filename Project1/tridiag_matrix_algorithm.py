@@ -36,7 +36,7 @@ def tridiagonal_matrix_algorithm(a, b, c, f):
     for k in range(n-2, -1, -1):
         u[k] = d_prime[k] - (c_prime[k]*u[k+1])
 
-    return u
+    return np.concatenate([np.zeros(1), u, np.zeros(1)])
 
 def run_tma(n):
     """
@@ -62,8 +62,7 @@ def run_tma(n):
     b = np.ones(n)*(2)
     c = np.ones(n-1)*(-1)
 
-    u_algorithm = np.zeros(n+2)
-    u_algorithm[1:n+1] = tridiagonal_matrix_algorithm(a, b, c, f)
+    u_algorithm = tridiagonal_matrix_algorithm(a, b, c, f)
 
     return x, u_sol, u_algorithm
 
