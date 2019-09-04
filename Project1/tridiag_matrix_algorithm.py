@@ -14,7 +14,7 @@ def tridiagonal_matrix_algorithm(a, b, c, f):
         f (array) : RHS vector
 
     Returns:
-        The solution u of the problem Au = d
+        The solution u of the problem Au = f
     """
 
     n       = len(b)
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         plt.xlabel('$x$')
         plt.ylabel('$u (x)$')
         plt.title("Approximation by tridiagonal matrix algorithm, n={}".format(i))
-        plt.savefig("t_m_a_n_{}.png".format(i))
+        plt.savefig("Figures/t_m_a_n_{}.png".format(i))
         plt.show()
 
 
