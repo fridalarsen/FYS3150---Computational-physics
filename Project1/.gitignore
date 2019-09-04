@@ -1,0 +1,12 @@
+# Python
+__pycache__/*
+
+# ?
+*.DS_Store
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.bib
