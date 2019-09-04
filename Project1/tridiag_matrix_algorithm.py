@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def tridiagonal_matrix_algorithm(a, b, c, f):
+def tridiagonal_matrix_algorithm(a, b, c, f, x):
     """
     Function implementing the tridiagonal matrix algorithm, which solves the
     problem Au = f for an nxn tridiagonal matrix A.
@@ -18,7 +18,6 @@ def tridiagonal_matrix_algorithm(a, b, c, f):
     """
 
     n       = len(b)
-    x       = np.linspace(0, 1, n+2)
     h       = x[1] - x[0]
     b_squig = h**2*f
     u       = np.zeros(n)
@@ -39,7 +38,7 @@ def tridiagonal_matrix_algorithm(a, b, c, f):
     for k in range(n-2, -1, -1):
         u[k] = d_prime[k] - (c_prime[k]*u[k+1])
 
-    return x, np.concatenate([np.zeros(1), u, np.zeros(1)])
+    return np.concatenate([np.zeros(1), u, np.zeros(1)])
 
 def run_tma(n):
     """
@@ -54,17 +53,17 @@ def run_tma(n):
         u_sol (array) : Closed-form solution of problem
         u_algorithm (array) : Numerical solution of problem
     """
-
-    u_sol = 1 - (1-np.exp(-10))*x - np.exp(-10*x)
-
+    x = np.linspace(0, 1, n+2)
     f = 100*np.exp(-10*x)
+
     a = np.ones(n-1)*(-1)
     b = np.ones(n)*(2)
     c = np.ones(n-1)*(-1)
 
-    x, u_algorithm = tridiagonal_matrix_algorithm(a, b, c, f)
+    u_algorithm = tridiagonal_matrix_algorithm(a, b, c, f, x)
+    u_solution  = 1 - (1-np.exp(-10))*x - np.exp(-10*x)
 
-    return x, u_sol, u_algorithm
+    return x, u_solution, u_algorithm
 
 
 if __name__ == '__main__':
