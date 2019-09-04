@@ -14,24 +14,35 @@ def special_tma(f, n):
         Solution u of the problem Au = f in the specialized case.
 
     """
+    flops = 0
+
     u       = np.zeros(n)
     f_tilde = np.zeros(n)
     b_tilde = np.array([(i+1)/i for i in range(1,n+1)])
+    flops  += 2*n
 
     h = x[1] - x[0]
     b_squig = h**2*f
+    flops  += 1
+    flops  += 2*(n+2)
 
     f_tilde[0] = b_squig[0]
     for i in range(1,n):
         i_ = i/(i+1)
+        flops += 2
         f_tilde[i] = b_squig[i] + i_*f_tilde[i-1]
+        flops += 2
+
 
     u[n-1] = f_tilde[n-1]/b_tilde[n-1]
+    flops += 1
     for i in range(n-2, -1, -1):
         i_ = (i+1)/(i+2)
+        flops += 3
         u[i] = i_*(f_tilde[i]+u[i+1])
+        flops += 2
 
-    return np.concatenate([np.zeros(1), u, np.zeros(1)])
+    return np.concatenate([np.zeros(1), u, np.zeros(1)]), flops
 
 if __name__ == '__main__':
     n_ = [10, 100, 1000]
@@ -42,7 +53,9 @@ if __name__ == '__main__':
         f = 100*np.exp(-10*x)
         sol  = 1 - (1-np.exp(-10))*x - np.exp(-10*x)
 
-        alg_2 = special_tma(f, i)
+        alg_2, flops = special_tma(f[1:-1], i)
+
+        print("Number of floating point operations for n={}: {}".format(i, flops))
 
         plt.plot(x, sol, label="Closed-form solution")
         plt.plot(x, alg_2, label="Specialized algorithm solution")
