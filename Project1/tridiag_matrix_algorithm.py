@@ -60,7 +60,7 @@ def run_tma(n):
     b = np.ones(n)*(2)
     c = np.ones(n-1)*(-1)
 
-    u_algorithm = tridiagonal_matrix_algorithm(a, b, c, f, x)
+    u_algorithm = tridiagonal_matrix_algorithm(a, b, c, f[1:-1], x[1:-1])
     u_solution  = 1 - (1-np.exp(-10))*x - np.exp(-10*x)
 
     return x, u_solution, u_algorithm
