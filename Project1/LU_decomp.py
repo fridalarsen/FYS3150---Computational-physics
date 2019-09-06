@@ -35,12 +35,13 @@ for i in range(len(n)):
     times_LU_decomp[i, 0] = t.mean()
     times_LU_decomp[i, 1] = t.std()
 
-    plt.plot(x, u_lu, label="LU-decomp")
-    plt.plot(x, u_sol, label="Closed-form")
+    plt.plot(x, u_lu, label="LU-decomposition solution")
+    plt.plot(x, u_sol, label="Closed-form solution")
     plt.title("Approximation by LU-decomposition, n={}".format(n[i]))
     plt.xlabel('$x$')
     plt.ylabel('$u(x)$')
     plt.legend()
+    plt.savefig("Figures/LU_decomp_{}.png".format(n[i]))
     plt.show()
 
 plt.errorbar(n, times_LU_decomp[:,0], yerr = times_LU_decomp[:,1], c='red',
@@ -48,7 +49,7 @@ plt.errorbar(n, times_LU_decomp[:,0], yerr = times_LU_decomp[:,1], c='red',
 plt.scatter(n, times_LU_decomp[:,0], c='red', s=10)
 plt.xscale("log")
 plt.yscale("log")
-plt.title("Algorithm run times - LU decomposition")
+plt.title("Average algorithm run times - LU decomposition")
 plt.xlabel('log $n$')
 plt.ylabel("log time [s]")
 plt.savefig("Figures/time_plot_LU.png")
