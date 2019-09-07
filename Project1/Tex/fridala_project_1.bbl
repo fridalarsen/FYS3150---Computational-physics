@@ -1,0 +1,26 @@
+\begin{thebibliography}{3}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Thomas(1949)]{algo1}
+L.H. Thomas.
+\newblock Elliptic problems in linear differential equations over a network.
+\newblock \emph{Watson Sci. Comput. Lab Report, Columbia University, New York},
+  1949.
+
+\bibitem[community()]{SciPy_linalg}
+The~SciPy community.
+\newblock Scipy linear algebra library (scipy.linalg).
+\newblock {\url{https://docs.scipy.org/doc/scipy/reference/linalg.html}}.
+
+\bibitem[Hjorth-Jensen(2018)]{lecture_notes}
+Morten Hjorth-Jensen.
+\newblock Computational physics lectures: Linear algebra methods.
+\newblock Lecture Notes, Sep 2018.
+\newblock
+  {\url{http://compphysics.github.io/ComputationalPhysics/doc/pub/linalg/html/linalg.html}}.
+
+\end{thebibliography}
