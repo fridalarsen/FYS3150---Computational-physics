@@ -5,7 +5,7 @@ from special_tridiag_matrix_algorithm import special_tma
 
 
 n = [int(m) for m in [1e1, 1e2, 1e3, 1e4, 1e5, 1e6]]
-m = 2
+m = 5
 
 # Original tridiagonal matrix algorithm
 times_otma = np.zeros([len(n), 2])
