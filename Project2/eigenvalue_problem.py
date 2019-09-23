@@ -63,7 +63,13 @@ class EigenvalueProblem:
         tol = 1e-8
         iterations = 0
         N = A.shape[0]
-        max_offdiag = 1
+        max_offdiag = 0
+
+        # find initial max off-diagonal element
+        for i in range(N):
+            for j in range(N):
+                if i != j:
+                    max_offdiag = abs(A[i,j])
 
         while max_offdiag > tol and iterations <= maxit:
             # find the maximum off-diagonal element
