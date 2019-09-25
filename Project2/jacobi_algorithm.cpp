@@ -5,31 +5,16 @@
 using namespace std;
 using namespace arma;
 
-int main(int argc, char** argv)
+void ArmadilloEigenpairs(mat T, mat &eigvec, vec &eigval)
 {
-  // define matrix
-  int N = 5;
-  vec d (N, fill::ones);
-  vec a (N-1, fill::ones);
-  mat T = -2.0*diagmat(d) + diagmat(a, -1) + diagmat(a, 1);
-
-  // use armadillo to find eigenvalues and eigenvectors
-  vec eigval;
-  mat eigvec;
-
   eig_sym(eigval, eigvec, T);
-  eigval.print();
-  eigvec.print();
+}
 
+void JacobiEigenpairs2(mat A, double maxit, mat &eigvec_, vec &eigval, int N)
+{
   // set up algorithm
-  double maxit = 10000;
   double tol = 1.0e-9;
   int it = 0;
-
-  // define matrix for holding eigenvectors
-  mat A = -2.0*diagmat(d) + diagmat(a, -1) + diagmat(a, 1);
-  vec diag (N, fill::ones);
-  mat eigvec_ = diagmat(diag);
 
   double max_offdiag = 0.0;
   // find maximum off-diagonal element of initial matrix
@@ -128,7 +113,37 @@ int main(int argc, char** argv)
     }
     it++;
   }
-  vec eigenvalues = A.diag();
-  eigenvalues.print();
+  eigval = A.diag();
+}
+
+int main(int argc, char** argv)
+{
+  // define matrix
+  int N = 5;
+  vec d (N, fill::ones);
+  vec a (N-1, fill::ones);
+  mat T = -2.0*diagmat(d) + diagmat(a, -1) + diagmat(a, 1);
+
+  // define matrix for holding eigenvectors, vector for holding eigenvalues
+  vec diag (N, fill::ones);
+  mat eigvec = diagmat(diag);
+  vec eigval (N, fill::zeros);
+
+  // call ArmadilloEigenpairs
+  ArmadilloEigenpairs(T, eigvec, eigval);
+  eigvec.print();
+  eigval.print();
+
+  // define matrix for holding eigenvectors, vector for holding eigenvalues
+  mat eigvec_ = diagmat(diag);
+  vec eigval_ (N, fill::zeros);
+
+  // call JacobiEigenpais2
+  double maxit = 200;
+  JacobiEigenpairs2(T, maxit, eigvec_, eigval_, N);
   eigvec_.print();
+  eigval_.print();
+
+  return 0;
+
 }
