@@ -1,17 +1,39 @@
 #include <cmath>
 #include <iostream>
 #include <armadillo>
+#include <cstdlib>
 
 using namespace std;
 using namespace arma;
 
-void ArmadilloEigenpairs(mat T, mat &eigvec, vec &eigval)
+
+extern "C" void ArmadilloEigenpairs(double **T, double **eigvec,
+                                    double **eigval, int N)
 {
-  eig_sym(eigval, eigvec, T);
+  mat A(T[0], N, N);
+  mat eigvec_(eigvec[0], N, N);
+  vec eigval_(eigval[0], N);
+
+  eig_sym(eigval_, eigvec_, A);
+
+  for (int i = 0; i < N; ++i)
+  {
+    for (int j = 0; j < N; ++j)
+    {
+      T[i][j] = A(i,j);
+      eigvec[i][j] = eigvec_(i,j);
+    }
+    eigval[i][0] = eigval_(i);
+  }
 }
 
-void JacobiEigenpairs2(mat A, double maxit, mat &eigvec_, vec &eigval, int N)
+extern "C" void JacobiEigenpairs2(double **T, double maxit, double **eigvec,
+                                  double **eigval, int N)
 {
+  mat A(T[0], N, N);
+  mat eigvec_(eigvec[0], N, N);
+  vec eigval_(eigval[0], N);
+
   // set up algorithm
   double tol = 1.0e-9;
   int it = 0;
@@ -113,37 +135,15 @@ void JacobiEigenpairs2(mat A, double maxit, mat &eigvec_, vec &eigval, int N)
     }
     it++;
   }
-  eigval = A.diag();
-}
+  eigval_ = A.diag();
 
-int main(int argc, char** argv)
-{
-  // define matrix
-  int N = 5;
-  vec d (N, fill::ones);
-  vec a (N-1, fill::ones);
-  mat T = -2.0*diagmat(d) + diagmat(a, -1) + diagmat(a, 1);
-
-  // define matrix for holding eigenvectors, vector for holding eigenvalues
-  vec diag (N, fill::ones);
-  mat eigvec = diagmat(diag);
-  vec eigval (N, fill::zeros);
-
-  // call ArmadilloEigenpairs
-  ArmadilloEigenpairs(T, eigvec, eigval);
-  eigvec.print();
-  eigval.print();
-
-  // define matrix for holding eigenvectors, vector for holding eigenvalues
-  mat eigvec_ = diagmat(diag);
-  vec eigval_ (N, fill::zeros);
-
-  // call JacobiEigenpais2
-  double maxit = 200;
-  JacobiEigenpairs2(T, maxit, eigvec_, eigval_, N);
-  eigvec_.print();
-  eigval_.print();
-
-  return 0;
-
+  for (int i = 0; i < N; ++i)
+  {
+    for (int j = 0; j < N; ++j)
+    {
+      T[i][j] = A(i,j);
+      eigvec[i][j] = eigvec_(i,j);
+    }
+    eigval[i][0] = eigval_(i);
+  }
 }
