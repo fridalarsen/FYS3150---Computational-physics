@@ -52,7 +52,6 @@ class EigenvalueProblem:
         def arr2pparr(x):
             xpp = (x.ctypes.data + np.arange(x.shape[0]) *\
                    x.strides[0]).astype(np.uintp)
-
             return xpp
 
         A = A.astype(np.float_)
@@ -74,7 +73,10 @@ class EigenvalueProblem:
             EigenVectors = np.eye((N))
             self.JacobiEigenpairs2(arr2pparr(A), maxit, arr2pparr(EigenVectors),
                                    arr2pparr(EigenValues), N)
-
+            EigenValues = EigenValues.flatten()
+            idx = np.argsort(EigenValues)
+            EigenValues = EigenValues[idx]
+            EigenVectors = EigenVectors[:, idx]
 
         elif method == "Armadillo":
             N = A.shape[0]
@@ -83,9 +85,7 @@ class EigenvalueProblem:
             self.ArmadilloEigenpairs(arr2pparr(A), arr2pparr(EigenVectors),
                                      arr2pparr(EigenValues), N)
 
-
         return EigenValues.flatten(), EigenVectors.T
-
 
     def NumpyEigenpairs(self, A):
         """
@@ -125,7 +125,7 @@ class EigenvalueProblem:
             EigenVectors (array): All eigenvectors as row vectors, sorted
                                    corresponding to eigenvalues.
         """
-        tol = 1e-8
+        tol = 1e-12
         iterations = 0
         N = A.shape[0]
         max_offdiag = 0.
@@ -200,7 +200,6 @@ class EigenvalueProblem:
         EigenVectors = EigenVectors[:, idx]
 
         return EigenValues, EigenVectors
-
 
 if __name__ == "__main__":
     f = EigenvalueProblem()
