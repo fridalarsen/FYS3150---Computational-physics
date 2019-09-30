@@ -1,7 +1,7 @@
 # Python
 */__pycache__
 
-# unknown 
+# unknown
 *.DS_Store
 
 # LaTeX
@@ -9,3 +9,7 @@
 *.log
 *.out
 *.synctex.gz
+
+*.o
+*.so
+*.x
