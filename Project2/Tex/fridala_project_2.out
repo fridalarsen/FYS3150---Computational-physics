@@ -2,8 +2,17 @@
 \BOOKMARK [1][-]{section*.1}{Abstract}{section*.2}% 1
 \BOOKMARK [1][-]{section*.3}{Introduction}{section*.2}% 3
 \BOOKMARK [1][-]{section*.4}{Theory}{section*.2}% 4
-\BOOKMARK [1][-]{section*.5}{Method}{section*.2}% 5
-\BOOKMARK [1][-]{section*.6}{Results}{section*.2}% 6
-\BOOKMARK [1][-]{section*.7}{Discussion}{section*.2}% 7
-\BOOKMARK [1][-]{section*.8}{Conclusion}{section*.2}% 8
-\BOOKMARK [1][-]{section*.9}{Appendiks?}{section*.2}% 9
+\BOOKMARK [2][-]{section*.5}{Unitary transformations}{section*.4}% 5
+\BOOKMARK [3][-]{section*.6}{Preservation of dot product and orthogonality}{section*.5}% 6
+\BOOKMARK [3][-]{section*.7}{Givens rotations}{section*.5}% 7
+\BOOKMARK [2][-]{section*.8}{Buckling Beam Problem}{section*.4}% 8
+\BOOKMARK [2][-]{section*.9}{Quantum dots}{section*.4}% 9
+\BOOKMARK [3][-]{section*.10}{a single electron}{section*.9}% 10
+\BOOKMARK [3][-]{section*.11}{a pair of electrons}{section*.9}% 11
+\BOOKMARK [1][-]{section*.12}{Method}{section*.2}% 12
+\BOOKMARK [2][-]{section*.13}{The Jacobi Method}{section*.12}% 13
+\BOOKMARK [2][-]{section*.14}{NumPy and Armadillo libraries}{section*.12}% 14
+\BOOKMARK [1][-]{section*.15}{Results}{section*.2}% 15
+\BOOKMARK [1][-]{section*.16}{Discussion}{section*.2}% 16
+\BOOKMARK [1][-]{section*.17}{Conclusion}{section*.2}% 17
+\BOOKMARK [1][-]{section*.18}{References}{section*.2}% 18

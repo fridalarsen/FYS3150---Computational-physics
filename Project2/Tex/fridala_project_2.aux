@@ -16,16 +16,61 @@
 \gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\bibdata{fridala_project_2Notes,references.bib}
-\bibstyle{unsrtnat}
 \newlabel{FirstPage}{{}{1}{}{section*.1}{}}
 \@writefile{toc}{\contentsline {title}{FYS3150 - Project 2}{1}{section*.2}}
 \@writefile{toc}{\contentsline {abstract}{Abstract}{1}{section*.1}}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section*.3}}
 \@writefile{toc}{\contentsline {section}{\numberline {II}Theory}{1}{section*.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {III}Method}{1}{section*.5}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Results}{1}{section*.6}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{1}{section*.7}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{1}{section*.8}}
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Appendiks?}{1}{section*.9}}
-\newlabel{LastPage}{{}{1}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Unitary transformations}{1}{section*.5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1}Preservation of dot product and orthogonality}{1}{section*.6}}
+\newlabel{dot-orthog}{{II\tmspace  +\thinmuskip {.1667em}A\tmspace  +\thinmuskip {.1667em}1}{1}{}{section*.6}{}}
+\newlabel{proof1}{{1}{1}{}{equation.2.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2}Givens rotations}{2}{section*.7}}
+\newlabel{givens}{{II\tmspace  +\thinmuskip {.1667em}A\tmspace  +\thinmuskip {.1667em}2}{2}{}{section*.7}{}}
+\newlabel{rotation}{{2}{2}{}{equation.2.2}{}}
+\newlabel{givens_mat}{{3}{2}{}{equation.2.3}{}}
+\newlabel{long_thing}{{4}{2}{}{equation.2.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Buckling Beam Problem}{2}{section*.8}}
+\newlabel{bb1}{{5}{2}{}{equation.2.5}{}}
+\newlabel{double_deriv}{{6}{2}{}{equation.2.6}{}}
+\newlabel{bb2}{{7}{2}{}{equation.2.7}{}}
+\newlabel{FL}{{8}{2}{}{equation.2.8}{}}
+\newlabel{big_boi}{{9}{2}{}{equation.2.9}{}}
+\newlabel{eigenpairs}{{10}{2}{}{equation.2.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Quantum dots}{3}{section*.9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1}a single electron}{3}{section*.10}}
+\newlabel{simple_tusl}{{11}{3}{}{equation.2.11}{}}
+\newlabel{anal_eig}{{13}{3}{}{equation.2.13}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2}a pair of electrons}{3}{section*.11}}
+\newlabel{lol}{{16}{3}{}{equation.2.16}{}}
+\citation{NumPy_linalg}
+\citation{Arma1}
+\citation{Arma2}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Method}{4}{section*.12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}The Jacobi Method}{4}{section*.13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}NumPy and Armadillo libraries}{4}{section*.14}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Results}{4}{section*.15}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Eigenvectors of a buckling beam calculated with Armadillo and the Jacobi method.}}{4}{figure.1}}
+\newlabel{eigenvectors_bb}{{1}{4}{Eigenvectors of a buckling beam calculated with Armadillo and the Jacobi method}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Relative max error of Jacobi algorithm and Armadillo for different number of maximum rotations.}}{5}{figure.2}}
+\newlabel{relative_max_error}{{2}{5}{Relative max error of Jacobi algorithm and Armadillo for different number of maximum rotations}{figure.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Lambda-values obtained using 4 different methods. The Jacobi methods had max rotations set to $10^3$.}}{5}{table.1}}
+\newlabel{lambdas}{{I}{5}{Lambda-values obtained using 4 different methods. The Jacobi methods had max rotations set to $10^3$}{table.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Eigenvectors of an electron in a 3D harmonic oscillator potential.}}{5}{figure.3}}
+\newlabel{eigvec_qdots1}{{3}{5}{Eigenvectors of an electron in a 3D harmonic oscillator potential}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Colorbar plot of the error of eigenvalues found using the Jacobi method as a function of $N$ and $\rho _{max}$.}}{5}{figure.4}}
+\newlabel{qdots2}{{4}{5}{Colorbar plot of the error of eigenvalues found using the Jacobi method as a function of $N$ and $\rho _{max}$}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces First five computed eigenvalues using the Jacobi algorithm with different values of $\omega _r$.}}{5}{table.2}}
+\newlabel{lambda_table}{{II}{5}{First five computed eigenvalues using the Jacobi algorithm with different values of $\omega _r$}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The first three eigenvectors of two electrons in a harmonic oscillator potential and their corresponding eigenvalues for $\omega _r=0.01$.}}{5}{figure.5}}
+\newlabel{2dots_vector}{{5}{5}{The first three eigenvectors of two electrons in a harmonic oscillator potential and their corresponding eigenvalues for $\omega _r=0.01$}{figure.5}{}}
+\bibdata{fridala_project_2Notes,references.bib}
+\bibcite{NumPy_linalg}{{1}{}{{community}}{{}}}
+\bibcite{Arma1}{{2}{2016}{{Sanderson and Curtin}}{{}}}
+\bibcite{Arma2}{{3}{2019}{{Sanderson and Curtin}}{{}}}
+\bibstyle{unsrtnat}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{6}{section*.16}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{6}{section*.17}}
+\@writefile{toc}{\contentsline {section}{\numberline {}References}{6}{section*.18}}
+\newlabel{LastBibItem}{{3}{6}{}{section*.18}{}}
+\newlabel{LastPage}{{}{6}{}{}{}}
