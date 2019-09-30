@@ -35,7 +35,7 @@ extern "C" void JacobiEigenpairs2(double **T, double maxit, double **eigvec,
   vec eigval_(eigval[0], N);
 
   // set up algorithm
-  double tol = 1.0e-9;
+  double tol = 1.0e-12;
   int it = 0;
 
   double max_offdiag = 0.0;
