@@ -1,8 +1,10 @@
 #include <iostream>
 #include <cmath>
+#include "gauss-laguerre.cpp"
 
 using namespace std;
 
+void gauss_laguerre(double *x, double *w, int n, double alf);
 
 double Legendre(int n, double x)
 /* Function for computing Legendre polynomial of degree n.
@@ -33,11 +35,11 @@ extern "C" void GaussLegendre(double a, double b, double **x, double **w, int N,
    Gaussian quadrature.
 
    Arguments:
-      a (double): lower integration limit
-      b (double): upper integration limit
-      x (double **): empty 1d column array, length N
-      w (double **): empty 1d column array, length N
-      N (int): number of integration points
+      a (double): lower integration limit.
+      b (double): upper integration limit.
+      x (double **): empty 1d column array, length N.
+      w (double **): empty 1d column array, length N.
+      N (int): number of integration points.
 
    "Returns":
       x (double **): filled with zeros of Legendre polynomial of Nth degree.
@@ -77,4 +79,38 @@ extern "C" void GaussLegendre(double a, double b, double **x, double **w, int N,
     w[i][0]   = 2*radius / ((1 - next_guess*next_guess) * dleg*dleg);
     w[N-1-i][0] = w[i][0];
   }
+}
+
+extern "C" void GaussLaguerre(double **x, double **w, int n, double alf)
+/* Function for finding zeros and weights using Laguerre polynomials in the
+   Gaussian quadrature.
+
+   Arguments:
+      x (double **): empty 1d column array, length N.
+      w (double **): empty 1d column array, length N.
+      n (int): number of integration points.
+      alf (double): weight function exponent.
+
+   "Returns":
+      x (double **): filled with zeros of Legendre polynomial of Nth degree.
+      w (double **): filled with integration weights.
+*/
+{
+  double *xx = new double[n];
+  double *ww = new double[n];
+
+  for(int i=0; i<n; i++){
+    xx[i] = x[i][0];
+    ww[i] = w[i][0];
+  }
+
+  gauss_laguerre(xx, ww, n, alf);
+
+  for(int j=0; j<n; j++){
+    x[j][0] = xx[j];
+    w[j][0] = ww[j];
+  }
+
+  delete[] xx;
+  delete[] ww;
 }
