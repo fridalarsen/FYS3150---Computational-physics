@@ -68,19 +68,13 @@ extern "C" void GaussLegendre(double a, double b, double **x, double **w, int N,
 
       next_guess = guess - (leg/dleg);
     }
-    
+
     // set x-values
     x[i][0]   = center - radius*next_guess;
     x[N-1-i][0] = center + radius*next_guess;   // using the fact that the roots are symmetric
 
     // set w-values
-    w[i][0]   = 2*center / ((1 - next_guess*next_guess) * dleg*dleg);
+    w[i][0]   = 2*radius / ((1 - next_guess*next_guess) * dleg*dleg);
     w[N-1-i][0] = w[i][0];
-
   }
-
-
-
-
-
 }
