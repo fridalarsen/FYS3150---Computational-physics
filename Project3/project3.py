@@ -49,7 +49,6 @@ class Project3:
         Returns:
             I (float): Computed integral value.
             t (float): Time taken to compute integral.
-
             var (float): Variance of computed integral. (Only returned for the
                          Monte Carlo methods)
         """
@@ -69,16 +68,10 @@ class Project3:
             solve3X = self.run_solve3e
 
         if task == "3a" or task == "3b":
-            start = time.perf_counter()
-            I = solve3X(**kwargs)
-            end = time.perf_counter()
-            t = end-start
+            I, t = solve3X(**kwargs)
             return I, t
         else:
-            start = time.perf_counter()
-            I, var = solve3X(**kwargs)
-            end = time.perf_counter()
-            t = end-start
+            I, var, t = solve3X(**kwargs)
             return I, var, t
 
     def run_solve3a(self, lamb, N, tol=1e-8):
@@ -93,9 +86,13 @@ class Project3:
 
         Returns:
             I (float): Computed integral value.
+            t (float): Time taken to compute integral.
         """
+        start = time.perf_counter()
         I = self.solve3a(float(lamb), int(N), float(tol))
-        return I
+        end = time.perf_counter()
+        t = end-start
+        return I, t
 
     def run_solve3b(self, N, tol=1e-8):
         """
@@ -108,9 +105,13 @@ class Project3:
 
         Returns:
             I (float): Computed integral value.
+            t (float): Time taken to compute integral.
         """
+        start = time.perf_counter()
         I = self.solve3b(int(N), float(tol))
-        return I
+        end = time.perf_counter()
+        t = end-start
+        return I, t
 
     def run_solve3c(self, N, a, b):
         """
@@ -124,15 +125,20 @@ class Project3:
         Returns:
             I (float): Computed integral value.
             var (float): Variance of computed integral.
+            t (float): Time taken to compute integral.
         """
         I = ctypes.c_double()
         var = ctypes.c_double()
 
+        start = time.perf_counter()
         self.solve3c(int(N), ctypes.byref(I), ctypes.byref(var), float(a),
                      float(b))
+        end = time.perf_counter()
+        t = end-start
+
         I = I.value
         var = var.value
-        return I, var
+        return I, var, t
 
     def run_solve3d(self, N, seed=None):
         """
@@ -146,6 +152,7 @@ class Project3:
         Returns:
             I (float): Computed integral value.
             var (float): Variance of computed integral.
+            t (float): Time taken to compute integral.
         """
         if seed == None:
             seed = np.random.randint(100)
@@ -153,10 +160,14 @@ class Project3:
         I = ctypes.c_double()
         var = ctypes.c_double()
 
+        start = time.perf_counter()
         self.solve3d(int(N), ctypes.byref(I), ctypes.byref(var), int(seed))
+        end = time.perf_counter()
+        t = end-start
+
         I = I.value
         var = var.value
-        return I, var
+        return I, var, t
 
     def run_solve3e(self, N, npar):
         """
@@ -170,16 +181,20 @@ class Project3:
         Returns:
             I (float): Computed integral value.
             var (float): Variance of computed integral.
+            t (float): Time taken to compute integral.
         """
         if os.path.exists("results_3e.txt"):
             os.remove("results_3e.txt")
 
+        start = time.perf_counter()
         os.system(f"mpiexec -n {npar} ./MC_parallelize.x {N}")
+        end = time.perf_counter()
+        t = end-start
 
         with open("results_3e.txt", "r") as results:
             I, var = [float(line) for line in results.readlines()]
 
-        return I, var
+        return I, var, t
 
 if __name__ == "__main__":
     P3 = Project3()
