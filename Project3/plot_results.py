@@ -69,9 +69,9 @@ plt.axhline(exact, ls="-", c="darkorange", lw=2, label="Analytic")
 plt.plot(N_a, results_a, marker='o', ls="none", ms=6, c="darkred",
              label="Gauss-Legendre")
 plt.plot(N_b, results_b, marker='o', ls="none", ms=6, c="darkgreen",
-             label="Gauss-Laguerre")
+             label="Mixed")
 plt.legend()
-plt.title("Error of Integral Approximations - Gaussian Quadrature", fontsize=15)
+plt.title("Integral Approximations - Gaussian Quadrature", fontsize=15)
 plt.xlabel("N", fontsize=12)
 plt.ylabel("I", fontsize=12)
 plt.savefig("./Figures/QC_quadrature.png")
@@ -84,7 +84,7 @@ plt.errorbar(N_d, (mean_results_d), std_d, marker="o", ls="none", c="darkgreen",
              label="Improved Monte Carlo")
 plt.xscale("log")
 plt.legend(loc="upper left")
-plt.title("Error of Integral Approximations - Monte Carlo", fontsize=15)
+plt.title("Integral Approximations - Monte Carlo", fontsize=15)
 plt.xlabel("N", fontsize=12)
 plt.ylabel("I", fontsize=12)
 plt.savefig("./Figures/MC.png")
@@ -92,7 +92,7 @@ plt.show()
 
 plt.plot(N_a, times_a_avg, marker="o", ls="none", label="Gauss-Legendre",
          c="darkred")
-plt.plot(N_b, times_b_avg, marker="o", ls="none", label="Gauss-Laguerre",
+plt.plot(N_b, times_b_avg, marker="o", ls="none", label="Mixed",
          c="darkgreen")
 plt.legend()
 plt.title("Average Algorithm Times", fontsize=15)
