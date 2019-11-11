@@ -135,7 +135,33 @@ class IsingModel {
       C_V = beta*beta*(C_V - E_mean*E_mean); // must be *k_B in main
       chi = beta*(chi - M_mean*M_mean);
     }
+
+    void continue_MonteCarlo(int MC_cycles_p, int MC_cycles_n, double& E_mean,
+                             double& C_V, double& M_mean, double& chi){
+      double E_temp;
+      dobule CV_temp;
+      double M_temp;
+      double chi_temp;
+      MonteCarlo(MC_cycles_n, E_temp, CV_temp, M_temp, chi_temp);
+
+      double a = (double)MC_cycles_p / (double)(MC_cycles_p+MC_cycles_n);
+      double b = (double)MC_cycles_n / (double)(MC_cycles_p+MC_cycles_n);
+      E_mean = a*E_mean + b*E_temp; // sum of averages, look it up loser
+      C_V = a*C_V + b*CV_temp;
+      M_mean = a*M_mean + b*M_temp;
+      chi = a*chi + b*chi_temp;
+    }
 };
+
+void write_to_file(str filename, double* data, int len, int precision = 16){
+  ofstream myfile;
+  myfile.open(filename);
+  myfile << setprecision(precision);
+  for(int i=0; i<len; i++){
+    myfile << data[i] << endl;
+  }
+  myfile.close();
+}
 
 int main(){
   IsingModel IM(10);
