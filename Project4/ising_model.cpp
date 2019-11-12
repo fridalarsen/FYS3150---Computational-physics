@@ -19,7 +19,8 @@ class IsingModel {
 
     int periodic_boundaries(int index){
       /*
-      Checks whether an index is within the grid or not.
+      Checks whether an index is within the grid or not. Ensures periodic
+      boundaries. 
       */
       if(index == -1){
         return (N-1);
