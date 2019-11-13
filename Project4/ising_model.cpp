@@ -1,6 +1,9 @@
 #include <iostream>
 #include <random>
 #include <cmath>
+#include <string>
+#include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -20,7 +23,7 @@ class IsingModel {
     int periodic_boundaries(int index){
       /*
       Checks whether an index is within the grid or not. Ensures periodic
-      boundaries. 
+      boundaries.
       */
       if(index == -1){
         return (N-1);
@@ -204,7 +207,7 @@ class IsingModel {
         E_mean, C_V, M_mean, chi: See MonteCarlo function.
       */
       double E_temp;
-      dobule CV_temp;
+      double CV_temp;
       double M_temp;
       double chi_temp;
       MonteCarlo(MC_cycles_n, E_temp, CV_temp, M_temp, chi_temp);
@@ -218,7 +221,8 @@ class IsingModel {
     }
 };
 
-void write_to_file(str filename, double* data, int len, int precision = 16){
+template<class T>
+void write_to_file(string filename, T* data, int len, int precision = 16){
   /*
   Function for writing the data of an array to a file.
   Arguments:
