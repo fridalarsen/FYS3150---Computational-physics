@@ -93,7 +93,7 @@ class IsingModel {
         }
       }
       M = N*N;
-      E = 2*N*N;
+      E = -2*N*N;
       beta = 0.25;
       J = 1;
     }
@@ -146,6 +146,34 @@ class IsingModel {
       }
     }
 
+    void initialize_random_grid(){
+      /*
+      Function for creating a random grid using an even distribution.
+      */
+      for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
+          int p = grid[i][j];
+
+          double val = probability(generator);
+          if(val < 0.5){
+            grid[i][j] = 1;
+          }else{
+            grid[i][j] = -1;
+          }
+          if(grid[i][j] != p){
+            int neighbours = 0;
+            neighbours += grid[periodic_boundaries(i)][periodic_boundaries(j-1)];
+            neighbours += grid[periodic_boundaries(i)][periodic_boundaries(j+1)];
+            neighbours += grid[periodic_boundaries(i-1)][periodic_boundaries(j)];
+            neighbours += grid[periodic_boundaries(i+1)][periodic_boundaries(j)];
+
+            E += 2*J*grid[i][j]*neighbours;
+            M += 2*grid[i][j];
+          }
+        }
+      }
+    }
+
     void analyze_initialize_grid(int max_cycles, int* E_, int* M_){
       /*
       Function for estimating mean energy and magnetization to be used for
@@ -180,10 +208,12 @@ class IsingModel {
       C_V = 0;
       M_mean = 0;
       chi = 0;
+      double M_mean_signed = 0;
       for(int i=0; i<MC_cycles; i++){
         randomize_grid();
         E_mean += E;
         M_mean += fabs(M);
+        M_mean_signed += M;
 
         C_V += E*E;
         chi += M*M;
@@ -192,9 +222,10 @@ class IsingModel {
       M_mean = M_mean / (double)MC_cycles;
       C_V = C_V / (double)MC_cycles;
       chi = chi / (double)MC_cycles;
+      M_mean_signed = M_mean_signed / (double)MC_cycles;
 
-      C_V = beta*beta*(C_V - E_mean*E_mean); // must be *k_B in main
-      chi = beta*(chi - M_mean*M_mean);
+      C_V = beta*beta*(C_V - E_mean*E_mean);
+      chi = beta*(chi - M_mean_signed*M_mean_signed);
     }
 
     void continue_MonteCarlo(int MC_cycles_p, int MC_cycles_n, double& E_mean,
