@@ -237,30 +237,6 @@ class IsingModel {
       chi = beta*(chi - M_mean_signed*M_mean_signed);
     }
 
-    void continue_MonteCarlo(int MC_cycles_p, int MC_cycles_n, double& E_mean,
-                             double& C_V, double& M_mean, double& chi){
-      /*
-      Function for continuing Monte Carlo simulation.
-      Arguments:
-        MC_cycles_p: Number of Monte Carlo cycles already performed.
-        MC_cycles_n: Number of additional Monte Carlo cycles to perform.
-        E_mean, C_V, M_mean, chi: See MonteCarlo function.
-      */
-      double E_temp;
-      double CV_temp;
-      double M_temp;
-      double chi_temp;
-      MonteCarlo(MC_cycles_n, E_temp, CV_temp, M_temp, chi_temp);
-
-      double a = (double)MC_cycles_p / (double)(MC_cycles_p+MC_cycles_n);
-      double b = (double)MC_cycles_n / (double)(MC_cycles_p+MC_cycles_n);
-      E_mean = a*E_mean + b*E_temp; // sum of averages, look it up loser
-      C_V = a*C_V + b*CV_temp;
-      M_mean = a*M_mean + b*M_temp;
-      chi = a*chi + b*chi_temp;
-    }
-};
-
 template<class T>
 void write_to_file(string filename, T* data, int len, int precision = 16){
   /*
