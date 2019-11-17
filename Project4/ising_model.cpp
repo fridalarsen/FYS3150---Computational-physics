@@ -236,6 +236,7 @@ class IsingModel {
       C_V = beta*beta*(C_V - E_mean*E_mean);
       chi = beta*(chi - M_mean_signed*M_mean_signed);
     }
+  };
 
 template<class T>
 void write_to_file(string filename, T* data, int len, int precision = 16){
