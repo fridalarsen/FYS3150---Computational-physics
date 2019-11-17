@@ -19,6 +19,7 @@ class IsingModel {
     uniform_int_distribution<int> random_index;
     uniform_real_distribution<double> probability;
     double beta;
+    int accepted;
 
     int periodic_boundaries(int index){
       /*
@@ -54,6 +55,7 @@ class IsingModel {
         grid[i][j] = -grid[i][j];
         M += 2*grid[i][j];
         E += delta_E;
+        accepted += 1;
       }else{
         double w = exp(-beta*delta_E);
         double r = probability(generator);
@@ -61,6 +63,7 @@ class IsingModel {
           grid[i][j] = -grid[i][j];
           M += 2*grid[i][j];
           E += delta_E;
+          accepted += 1;
         }
       }
     }
@@ -96,6 +99,7 @@ class IsingModel {
       E = -2*N*N;
       beta = 0.25;
       J = 1;
+      accepted = 0;
     }
     ~IsingModel(){
       /*
@@ -174,7 +178,8 @@ class IsingModel {
       }
     }
 
-    void analyze_initialize_grid(int max_cycles, int* E_, int* M_){
+    void analyze_initialize_grid(int max_cycles, int* E_, int* M_,
+                                 double* accepted_config){
       /*
       Function for estimating mean energy and magnetization to be used for
       finding the optimal amount of burn in required. Note that the values
@@ -184,11 +189,15 @@ class IsingModel {
         max_cycles (int): Maximum number of Monte Carlo burn in cycles.
         E_ (int array): Array to store mean energy values.
         M_ (int array): Array to store mean magnetization values.
+        accepted_config (double array): Array to store number of accepted
+                                        configurations.
       */
       for(int i=0; i<max_cycles; i++){
+        accepted = 0;
         randomize_grid();
         E_[i] = E;
         M_[i] = M;
+        accepted_config[i] = accepted;
       }
     }
 
