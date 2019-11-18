@@ -19,12 +19,13 @@ for i in range(len(L)):
               f'Specific heat during phase transition, L={L[i]}',
               f'Susceptibility during phase transition, L={L[i]}']
 
-    for i in range(len(data)):
-        plt.plot(T, data[i], color="indigo")
+    for j in range(len(data)):
+        plt.plot(T, data[j], color="indigo")
         plt.xlabel("T [kT/J]", fontsize=12)
-        plt.ylabel(ylabels[i], fontsize=12)
+        plt.ylabel(ylabels[j], fontsize=12)
         plt.subplots_adjust(left=0.15, right=0.92)
-        plt.title(titles[i], fontsize=14)
+        plt.title(titles[j], fontsize=14)
+        plt.savefig(f'Figures/4e_L{L[i]}_{j}.png')
         plt.show()
 
 # the zoomed-in plots for L=100:
@@ -49,4 +50,5 @@ for i in range(len(data)):
     plt.ylabel(ylabels[i], fontsize=12)
     plt.subplots_adjust(left=0.15, right=0.92)
     plt.title(titles[i], fontsize=14)
+    plt.savefig(f'Figures/4e_L100_zoom_{i}.png')
     plt.show()
