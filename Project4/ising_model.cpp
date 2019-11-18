@@ -14,7 +14,6 @@ class IsingModel {
     int M;
     int E;
     double J;
-    random_device rd;
     mt19937_64 generator;
     uniform_int_distribution<int> random_index;
     uniform_real_distribution<double> probability;
@@ -78,7 +77,7 @@ class IsingModel {
     }
 
   public:
-    IsingModel(int n) : generator(rd()),
+    IsingModel(int n, int seed=42) : generator(seed),
     random_index(uniform_int_distribution<int>(0,n-1)),
     probability(uniform_real_distribution<double>(0,1)){
       /*
