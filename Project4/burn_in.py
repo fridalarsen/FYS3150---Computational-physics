@@ -12,11 +12,11 @@ acceptance1 = file_to_array("Results/4c_acceptance_1.dat")
 
 M2 = file_to_array("Results/burn_in_M_4c_2.dat")
 E2 = file_to_array("Results/burn_in_E_4c_2.dat")
-acceptance2 = file_to_array("Results/4c_acceptance_2.dat")
+acceptance2 = file_to_array("Results/4c_acceptance_3.dat")
 
 M3 = file_to_array("Results/burn_in_M_4c_3.dat")
 E3 = file_to_array("Results/burn_in_E_4c_3.dat")
-acceptance3 = file_to_array("Results/4c_acceptance_3.dat")
+acceptance3 = file_to_array("Results/4c_acceptance_2.dat")
 
 M4 = file_to_array("Results/burn_in_M_4c_4.dat")
 E4 = file_to_array("Results/burn_in_E_4c_4.dat")
