@@ -52,26 +52,3 @@ def RK4_step(y0, t0, h, func):
     t = t0 + h
 
     return t, y
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# y0
