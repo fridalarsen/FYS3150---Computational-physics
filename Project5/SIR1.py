@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from RK4 import RK4_step
 
 class SIR:
     """
@@ -105,14 +104,21 @@ class SIR:
         return S, I, R, t
 
 if __name__ == "__main__":
-    A = SIR(400, 4.0, 1.0, 0.5)
-    S, I, R, t = A.solve(300, 100, 1000, 0.0, 10.0)
+    a = 4.0
+    b = {"A": 1.0, "B": 2.0, "C": 3.0, "D": 4.0}
+    c = 0.5
 
-    plt.plot(t, S, label="Susceptible")
-    plt.plot(t, I, label="Infected")
-    plt.plot(t, R, label="Recovered")
-    plt.xlabel("Time")
-    plt.ylabel("Number of individuals")
-    plt.title("Disease evolution in a population")
-    plt.legend()
-    plt.show()
+    model = SIR(N=400)
+    for key, b_val in b.items():
+        model.set_parameters(a, b_val, c)
+        S, I, R, t = model.solve(300, 100, 1000, 0.0, 15.0)
+
+        plt.plot(t, S, label="Susceptible", color="crimson")
+        plt.plot(t, I, label="Infected", color="forestgreen")
+        plt.plot(t, R, label="Recovered", color="gold")
+        plt.xlabel("Time", fontsize=12)
+        plt.ylabel("Number of individuals", fontsize=12)
+        plt.title(f'Disease evolution in population {key}', fontsize=15)
+        plt.legend()
+        plt.savefig(f'Figures/RK4_population_{key}')
+        plt.show()
