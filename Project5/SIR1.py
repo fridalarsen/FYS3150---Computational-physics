@@ -111,7 +111,7 @@ if __name__ == "__main__":
     model = SIR(N=400)
     for key, b_val in b.items():
         model.set_parameters(a, b_val, c)
-        S, I, R, t = model.solve(300, 100, 1000, 0.0, 15.0)
+        S, I, R, t = model.solve(300, 100, 1000, 0.0, 12.0)
 
         plt.plot(t, S, label="Susceptible", color="crimson")
         plt.plot(t, I, label="Infected", color="forestgreen")
