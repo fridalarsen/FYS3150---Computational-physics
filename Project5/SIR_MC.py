@@ -63,6 +63,31 @@ class SIR_MC(SIR):
             t[i] = t[i-1] + dt
         return S, I, R, t
 
+    def find_equilibrium(self, S0, I0, n, t1, burn_in):
+        """
+        Function for finding equilibrium values.
+        Arguments:
+            S0, I0, n, t1: See solve_MC
+            burn_in (int): Number of steps before equilibrium is reached
+        Returns:
+            fractions (list): Average fraction of people in S, I and R
+                              respectively during equilibrium
+            stds (list): Standard deviations corresponding to fractions
+        """
+        S, I, R, t = self.solve_MC(S0, I0, n, t1)
+
+        S_ = np.mean(S[burn_in:])
+        std_S = np.std(S[burn_in:])
+        I_ = np.mean(I[burn_in:])
+        std_I = np.std(I[burn_in:])
+        R_ = np.mean(R[brun_in:])
+        std_R = np.std(R[burn_in:])
+
+        fractions = [S_/float(self.N), I_/float(self.N), R_/float(self.N)]
+        stds = [std_S, std_I, std_R]
+
+        return fractions, stds
+
 if __name__ == "__main__":
     a = 4.0
     b = {"A": 1.0, "B": 2.0, "C": 3.0, "D": 4.0}
@@ -72,6 +97,7 @@ if __name__ == "__main__":
     for key, b_val in b.items():
         n = 5000*b_val
         model.set_parameters(a, b_val, c)
+
         S, I, R, t = model.solve_MC(300, 100, int(n), 0.0)
 
         plt.plot(t, S, label="Susceptible", color="crimson")
