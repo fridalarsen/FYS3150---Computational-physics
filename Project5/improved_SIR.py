@@ -6,7 +6,7 @@ class SIR_model:
     Class for modeling an infectious disease.
     """
     def __init__(self, N0, vital_dynamics=False, seasonal_variation=False,
-                 vaccination=False):):
+                 vaccination=False):
         """
         Arguments:
             N (int): Initial size of population
@@ -36,7 +36,7 @@ class SIR_model:
             b (float, optional): Rate of recovery, defaults to 1
             c (float, optional): Rate of immunity loss, defaults to 1
         """
-        if seasonal_variation == False:
+        if self.seasonal_variation == False:
             self.a = a
 
         self.b = b
@@ -60,10 +60,9 @@ class SIR_model:
         """
         Function for setting the parameters of .
         Arguments:
-            A (float):
-            omega (float):
-            t (float):
-            a0 (float):
+            A (float): Maximum deviation from a0
+            omega (float): Frequency of oscillation
+            a0 (float): Average transmission rate
         """
         self.A = A
         self.omega = omega
@@ -75,73 +74,179 @@ class SIR_model:
         """
         Function for calculating transmission rate.
         Arguments:
-            t (float): time
+            t (float): Time
         Returns:
-            a (float):
+            a (float): The transmission rate at time t
         """
         a = self.A*np.cos(self.omega*t) + self.a0
 
         return a
 
-    def vaccination_rate(self, f=0.0):
+    def vaccination_rate(self, f):
         """
         Function for specifying the rate of vaccination.
         Arguments:
-            f (float or function, optional): Rate of vaccination, defaults to 0
+            f (float or function): Rate of vaccination
         """
         self.f = f
 
         self.vacr = True
 
-    def S_deriv(self, S, I, R):
+    def S_deriv(self, S, I, R, t):
         """
         Function for finding the derivative of S.
         Arguments:
             S (float): Number of susceptible individuals
             I (float): Number of infected individuals
             R (float): Number of recovered individuals
+            t (float): Current time-value
         Returns:
             S_deriv (float): The derivative of S
         """
-        if vital_dynamics = True:
+        S_deriv = self.c*R - (self.a*S*I)/float(self.N)
 
-        S_deriv = self.c*(float(self.N) - S - I) - (self.a*S*I)/float(self.N)
+        # check for model extensions
+        if self.vital_dynamics and not self.vaccination:
+            S_deriv += -self.d*S + self.e*self.N
+        elif self.vaccination and not self.vital_dynamics:
+            if isinstance(self.f, float):
+                S_deriv -= self.f
+            else:
+                S_deriv -= self.f(t)
+        elif self.vaccination and self.vital_dynamics:
+            if isinstance(self.f, float):
+                S_deriv += -self.d*S + self.e*self.N - self.f
+            else:
+                S_deriv += -self.d*S + self.e*self.N - self.f(t)
 
         return S_deriv
 
-    def I_deriv(self, S, I):
+    def I_deriv(self, S, I, t):
         """
         Function for finding the derivative of I.
         Arguments:
             S (float): Number of susceptible individuals
             I (float): Number of infected individuals
+            t (float): Current time-value
         Returns:
             I_deriv (float): The derivative of I
         """
-        I_deriv = (self.a*S*I)/float(self.N) - self.b*I
+        # check for seasonal variation
+        if self.seasonal_variation:
+            I_deriv = (self.a_var(t)*S*I)/float(self.N) - self.b*I
+        else:
+            I_deriv = (self.a*S*I)/float(self.N) - self.b*I
+
+        # check for vital dynamics
+        if self.vital_dynamics:
+            I_deriv += -self.b*I - self.d*I - self.d1*I
 
         return I_deriv
 
-    def solve_RK4(self):
+    def R_deriv(self, S, I, R, t):
         """
+        Function for finding the derivative of R.
+        Arguments:
+            S (float): Number of susceptible individuals
+            I (float): Number of infected individuals
+            R (float): Number of recovered individuals
+            t (float): Current time-value
+        Returns:
+            R_deriv (float): The derivative of R
         """
-        if self.vital_dynamics == True and self.vr == False:
+        R_deriv = self.b*I - self.c*R
+
+        # check for model extensions
+        if self.vital_dynamics and not self.vaccination:
+            R_deriv -= self.d*R
+        elif self.vaccination and not self.vital_dynamics:
+            if isinstance(self.f, float):
+                R_deriv += self.f
+            else:
+                R_deriv += self.f(t)
+        elif self.vital_dynamics and self.vaccination:
+            if isinstance(self.f, float):
+                R_deriv += self.f - self.d*R
+            else:
+                R_deriv += self.f(t) - self.d*R
+
+        return R_deriv
+
+    def solve_RK4(self, I0, S0, n, t1, t2):
+        """
+        Function for solving the SIR-model using RK4.
+        Arguments:
+            I0 (int): Initial number of infected individuals
+            S0 (int): Initial number of susceptible individuals
+            n (int): Number of time-steps to perform
+            t1 (float): Time starting point
+            t2 (float): Time end point
+        Returns:
+            S (array): Evolution of number of susceptible individuals
+            I (array): Evolution of number of infected individuals
+            R (array): Evolution of number of recovered individuals
+            t (array): Time array
+        """
+        if self.vital_dynamics and self.vr:
             raise AttributeError("Rates for population change have not been\
                                   set.")
-        if self.seasonal_variation == True and self.vp = False:
+        if self.seasonal_variation and self.vp:
             raise AttributeError("Parameters for seasonal variation have\
                                   not been set.")
-        if self.vaccination == True and self.vacr == False:
+        if self.vaccination and self.vacr:
             raise AttributeError("Vaccination rate has not been set.")
 
+        # set time-step
+        h = (t2 - t1)/float(n)
+
+        # prepare arrays
+        S = np.zeros(n)
+        I = np.zeros(n)
+        R = np.zeros(n)
+        t = np.zeros(n)
+
+        # set initial conditions
+        S[0] = S0
+        I[0] = I0
+        t[0] = t1
+
+        # solve
+        for i in range(1, n):
+            k1_S = h*self.S_deriv(S[i-1], I[i-1], R[i-1], t[i-1])
+            k2_S = h*self.S_deriv(S[i-1] + k1_S/2., I[i-1] + k1_S/2.,
+                                  R[i-1] + k1_S/2., t[i-1])
+            k3_S = h*self.S_deriv(S[i-1] + k2_S/2., I[i-1] + k2_S/2.,
+                                  R[i-1] + k2_S/2., t[i-1])
+            k4_S = h*self.S_deriv(S[i-1] + k3_S, I[i-1] + k3_S, R[i-1] + k3_S,
+                                  t[i-1])
+
+            k1_I = h*self.I_deriv(S[i-1], I[i-1], t[i-1])
+            k2_I = h*self.I_deriv(S[i-1] + k1_I/2., I[i-1] + k1_I/2., t[i-1])
+            k3_I = h*self.I_deriv(S[i-1] + k2_I/2., I[i-1] + k2_I/2., t[i-1])
+            k4_I = h*self.I_deriv(S[i-1] + k3_I, I[i-1] + k3_I, t[i-1])
+
+            k1_R = h*self.R_deriv(S[i-1], I[i-1], R[i-1], t[i-1])
+            k2_R = h*self.R_deriv(S[i-1] + k1_S/2., I[i-1] + k1_S/2.,
+                                  R[i-1] + k1_S/2., t[i-1])
+            k3_R = h*self.R_deriv(S[i-1] + k2_S/2., I[i-1] + k2_S/2.,
+                                  R[i-1] + k2_S/2., t[i-1])
+            k4_R = h*self.R_deriv(S[i-1] + k3_S, I[i-1] + k3_S, R[i-1] + k3_S,
+                                  t[i-1])
+
+            S[i] = S[i-1] + (1/6.)*(k1_S + 2*k2_S + 2*k3_S + k4_S)
+            I[i] = I[i-1] + (1/6.)*(k1_I + 2*k2_I + 2*k3_I + k4_I)
+            R[i] = R[i-1] + (1/6.)*(k1_R + 2*k2_R + 2*k3_R + k4_R)
+            t[i] = t[i-1] + h
+
+        return S, I, R, t
     def solve_MC(self):
         """
         """
-        if self.vital_dynamics == True and self.vr == False:
+        if self.vital_dynamics and self.vr:
             raise AttributeError("Rates for population change have not been\
                                   set.")
-        if self.seasonal_variation == True and self.vp = False:
+        if self.seasonal_variation and self.vp:
             raise AttributeError("Parameters for seasonal variation have\
                                   not been set.")
-        if self.vaccination == True and self.vacr == False:
+        if self.vaccination and self.vacr:
             raise AttributeError("Vaccination rate has not been set.")
