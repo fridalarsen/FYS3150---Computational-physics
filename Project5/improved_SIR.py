@@ -281,18 +281,26 @@ class SIR_model:
 
         for i in range(1, n):
             if self.seasonal_variation:
-                dt_SI = 4./(self.a(t)*self.N)
+                dt_SI = 4./(self.a_var(t)*self.N)
                 dt = np.min(np.array([dt_SI, dt_IR, dt_RS]))
 
             # calculate transition probabilities
-            if seasonal_variation:
+            if self.seasonal_variation:
                 P_SI = (self.a_var(t)*S[i-1]*I[i-1]*dt)/float(self.N)
             else:
                 P_SI = (self.a*S[i-1]*I[i-1]*dt)/float(self.N)
             P_IR = self.b*I[i-1]*dt
             P_RS = self.c*R[i-1]*dt
+            if self.vaccination:
+                if isinstance(self.f, float):
+                    P_SR = self.f
+                else:
+                    P_SR = self.f(t)
 
-            j = np.random.randint(0,3)
+            if self.vaccination:
+                j = np.random.randint(0,4)
+            else:
+                j = np.random.randint(0,3)
             r = np.random.random()
 
             # determine move / no move
@@ -307,6 +315,10 @@ class SIR_model:
             elif j == 2 and r < P_RS and R[i-1] != 0:
                 R[i] = R[i-1] - 1
                 S[i] = S[i-1] + 1
+                I[i] = I[i-1]
+            elif j == 3 and r < P_SR and I[i-1] != 0:
+                R[i] = R[i-1] + 1
+                S[i] = S[i-1] - 1
                 I[i] = I[i-1]
             else:
                 S[i] = S[i-1]
