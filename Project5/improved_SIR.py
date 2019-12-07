@@ -273,13 +273,17 @@ class SIR_model:
         t[0] = t1
 
         # calculate time step
-        dt_SI = 4./(self.a*self.N)
         dt_IR = 1./(self.b*self.N)
         dt_RS = 1./(self.c*self.N)
-
-        dt = np.min(np.array([dt_SI, dt_IR, dt_RS]))
+        if not self.seasnoal_variation:
+            dt_SI = 4./(self.a*self.N)
+            dt = np.min(np.array([dt_SI, dt_IR, dt_RS]))
 
         for i in range(1, n):
+            if self.seasonal_variation:
+                dt_SI = 4./(self.a(t)*self.N)
+                dt = np.min(np.array([dt_SI, dt_IR, dt_RS]))
+
             # calculate transition probabilities
             if seasonal_variation:
                 P_SI = (self.a_var(t)*S[i-1]*I[i-1]*dt)/float(self.N)
