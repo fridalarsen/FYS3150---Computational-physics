@@ -172,12 +172,12 @@ class SIR_model:
 
         return R_deriv
 
-    def solve_RK4(self, I0, S0, n, t1, t2):
+    def solve_RK4(self, S0, I0, n, t1, t2):
         """
         Function for solving the SIR-model using RK4.
         Arguments:
-            I0 (int): Initial number of infected individuals
-            S0 (int): Initial number of susceptible individuals
+            S0 (int): Initial number of infected individuals
+            I0 (int): Initial number of susceptible individuals
             n (int): Number of time-steps to perform
             t1 (float): Time starting point
             t2 (float): Time end point
@@ -239,8 +239,20 @@ class SIR_model:
             t[i] = t[i-1] + h
 
         return S, I, R, t
-    def solve_MC(self):
+
+    def solve_MC(self, S0, I0, n, t1):
         """
+        Function for solving the SIR-model using Monte Carlo.
+        Arguments:
+            S0 (int): Initial number of susceptible individuals
+            I0 (int): Initial number of infected individuals
+            n (int): Number of time-steps/Monte Carlo cycles to perform
+            t1 (float): Time starting point
+        Returns:
+            S (array): Evolution of number of susceptible individuals
+            I (array): Evolution of number of infected individuals
+            R (array): Evolution of number of recovered individuals
+            t (array): Time array
         """
         if self.vital_dynamics and self.vr:
             raise AttributeError("Rates for population change have not been\
@@ -250,3 +262,77 @@ class SIR_model:
                                   not been set.")
         if self.vaccination and self.vacr:
             raise AttributeError("Vaccination rate has not been set.")
+
+        # prepare arrays
+        S = np.zeros(n)
+        S[0] = S0
+        I = np.zeros(n)
+        I[0] = I0
+        R = np.zeros(n)
+        t = np.zeros(n)
+        t[0] = t1
+
+        # calculate time step
+        dt_SI = 4./(self.a*self.N)
+        dt_IR = 1./(self.b*self.N)
+        dt_RS = 1./(self.c*self.N)
+
+        dt = np.min(np.array([dt_SI, dt_IR, dt_RS]))
+
+        for i in range(1, n):
+            # calculate transition probabilities
+            if seasonal_variation:
+                P_SI = (self.a_var(t)*S[i-1]*I[i-1]*dt)/float(self.N)
+            else:
+                P_SI = (self.a*S[i-1]*I[i-1]*dt)/float(self.N)
+            P_IR = self.b*I[i-1]*dt
+            P_RS = self.c*R[i-1]*dt
+
+            j = np.random.randint(0,3)
+            r = np.random.random()
+
+            # determine move / no move
+            if j == 0 and r < P_SI and S[i-1] != 0:
+                S[i] = S[i-1] - 1
+                I[i] = I[i-1] + 1
+                R[i] = R[i-1]
+            elif j == 1 and r < P_IR and I[i-1] != 0:
+                I[i] = I[i-1] - 1
+                R[i] = R[i-1] + 1
+                S[i] = S[i-1]
+            elif j == 2 and r < P_RS and R[i-1] != 0:
+                R[i] = R[i-1] - 1
+                S[i] = S[i-1] + 1
+                I[i] = I[i-1]
+            else:
+                S[i] = S[i-1]
+                I[i] = I[i-1]
+                R[i] = R[i-1]
+
+            # account for population change
+            if self.vital_dynamics:
+                # determine probabilities
+                P_b = self.e*self.N
+                P_d_S = self.d*S[i]
+                P_d_I = (self.d + self.d1)*I[i]
+                P_d_R = self.d*R[i]
+
+                r1 = np.random.random()
+                # determine birth / no birth
+                if r1 < P_b:
+                    self.N += 1
+                    S[i] += 1
+
+                # determine deaths in each group
+                if np.random.random() < P_d_S:
+                    self.N -= 1
+                    S[i] -= 1
+                elif np.random.random() < P_d_I:
+                    self.N -= 1
+                    I[i] -= 1
+                elif np.random.random() < P_d_R:
+                    self.N -= 1
+                    R[i] -= 1
+
+            t[i] = t[i-1] + dt
+        return S, I, R, t
