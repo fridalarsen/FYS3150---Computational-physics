@@ -58,7 +58,8 @@ class SIR_model:
 
     def variational_param(self, A, omega, a0):
         """
-        Function for setting the parameters of .
+        Function for setting the parameters of seasonal variation of
+        transmission.
         Arguments:
             A (float): Maximum deviation from a0
             omega (float): Frequency of oscillation
@@ -103,21 +104,24 @@ class SIR_model:
         Returns:
             S_deriv (float): The derivative of S
         """
-        S_deriv = self.c*R - (self.a*S*I)/float(self.N)
+        if self.seasonal_variation:
+            S_deriv = self.c*R - (self.a_var(t)*S*I)/float(self.N)
+        else:
+            S_deriv = self.c*R - (self.a*S*I)/float(self.N)
 
         # check for model extensions
         if self.vital_dynamics and not self.vaccination:
             S_deriv += -self.d*S + self.e*self.N
         elif self.vaccination and not self.vital_dynamics:
             if isinstance(self.f, float):
-                S_deriv -= self.f
+                S_deriv -= self.f*S
             else:
-                S_deriv -= self.f(t)
+                S_deriv -= self.f(t)*S
         elif self.vaccination and self.vital_dynamics:
             if isinstance(self.f, float):
-                S_deriv += -self.d*S + self.e*self.N - self.f
+                S_deriv += -self.d*S + self.e*self.N - self.f*S
             else:
-                S_deriv += -self.d*S + self.e*self.N - self.f(t)
+                S_deriv += -self.d*S + self.e*self.N - self.f(t)*S
 
         return S_deriv
 
@@ -161,14 +165,14 @@ class SIR_model:
             R_deriv -= self.d*R
         elif self.vaccination and not self.vital_dynamics:
             if isinstance(self.f, float):
-                R_deriv += self.f
+                R_deriv += self.f*S
             else:
-                R_deriv += self.f(t)
+                R_deriv += self.f(t)*S
         elif self.vital_dynamics and self.vaccination:
             if isinstance(self.f, float):
-                R_deriv += self.f - self.d*R
+                R_deriv += self.f*S - self.d*R
             else:
-                R_deriv += self.f(t) - self.d*R
+                R_deriv += self.f(t)*S - self.d*R
 
         return R_deriv
 
@@ -187,14 +191,18 @@ class SIR_model:
             R (array): Evolution of number of recovered individuals
             t (array): Time array
         """
-        if self.vital_dynamics and self.vr:
+        if self.vital_dynamics and not self.vr:
             raise AttributeError("Rates for population change have not been\
                                   set.")
-        if self.seasonal_variation and self.vp:
+        if self.seasonal_variation and not self.vp:
             raise AttributeError("Parameters for seasonal variation have\
                                   not been set.")
-        if self.vaccination and self.vacr:
+        if self.vaccination and not self.vacr:
             raise AttributeError("Vaccination rate has not been set.")
+
+        if (S0+I0) != self.N:
+            raise ValueError("There are people not accounted for. Must have \
+                              S0+I0 = N")
 
         # set time-step
         h = (t2 - t1)/float(n)
@@ -254,14 +262,18 @@ class SIR_model:
             R (array): Evolution of number of recovered individuals
             t (array): Time array
         """
-        if self.vital_dynamics and self.vr:
+        if self.vital_dynamics and not self.vr:
             raise AttributeError("Rates for population change have not been\
                                   set.")
-        if self.seasonal_variation and self.vp:
+        if self.seasonal_variation and not self.vp:
             raise AttributeError("Parameters for seasonal variation have\
                                   not been set.")
-        if self.vaccination and self.vacr:
+        if self.vaccination and not self.vacr:
             raise AttributeError("Vaccination rate has not been set.")
+
+        if (S0+I0) != self.N:
+            raise ValueError("There are people not accounted for. Must have \
+                              S0+I0 = N")
 
         # prepare arrays
         S = np.zeros(n)
@@ -275,27 +287,27 @@ class SIR_model:
         # calculate time step
         dt_IR = 1./(self.b*self.N)
         dt_RS = 1./(self.c*self.N)
-        if not self.seasnoal_variation:
+        if not self.seasonal_variation:
             dt_SI = 4./(self.a*self.N)
             dt = np.min(np.array([dt_SI, dt_IR, dt_RS]))
 
         for i in range(1, n):
             if self.seasonal_variation:
-                dt_SI = 4./(self.a_var(t)*self.N)
+                dt_SI = 4./(self.a_var(t[i-1])*self.N)
                 dt = np.min(np.array([dt_SI, dt_IR, dt_RS]))
 
             # calculate transition probabilities
             if self.seasonal_variation:
-                P_SI = (self.a_var(t)*S[i-1]*I[i-1]*dt)/float(self.N)
+                P_SI = (self.a_var(t[i-1])*S[i-1]*I[i-1]*dt)/float(self.N)
             else:
                 P_SI = (self.a*S[i-1]*I[i-1]*dt)/float(self.N)
             P_IR = self.b*I[i-1]*dt
             P_RS = self.c*R[i-1]*dt
             if self.vaccination:
                 if isinstance(self.f, float):
-                    P_SR = self.f
+                    P_SR = self.f*S[i-1]*dt
                 else:
-                    P_SR = self.f(t)
+                    P_SR = self.f(t[i-1])*S[i-1]*dt
 
             if self.vaccination:
                 j = np.random.randint(0,4)
@@ -328,10 +340,10 @@ class SIR_model:
             # account for population change
             if self.vital_dynamics:
                 # determine probabilities
-                P_b = self.e*self.N
-                P_d_S = self.d*S[i]
-                P_d_I = (self.d + self.d1)*I[i]
-                P_d_R = self.d*R[i]
+                P_b = (self.e*self.N)*dt
+                P_d_S = (self.d*S[i])*dt
+                P_d_I = ((self.d + self.d1)*I[i])*dt
+                P_d_R = (self.d*R[i])*dt
 
                 r1 = np.random.random()
                 # determine birth / no birth
